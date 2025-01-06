@@ -26,6 +26,9 @@ class OtherBltManager implements OtherInterface {
   @override
   startScan({required Function(List<Printer> printers) callback}) async {
     try {
+      if (Platform.isIOS) {
+        return;
+      }
       await this.stopScan();
       this._bltSubscription = _flutterBlueClassic.scanResults.listen((device) {
         Printer printer = Printer(
@@ -43,6 +46,9 @@ class OtherBltManager implements OtherInterface {
 
   @override
   stopScan() async {
+    if (Platform.isIOS) {
+      return;
+    }
     this._flutterBlueClassic.stopScan();
     await this._bltSubscription?.cancel();
   }
