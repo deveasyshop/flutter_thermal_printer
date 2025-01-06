@@ -21,7 +21,7 @@ class OtherBleManager implements OtherInterface {
     try {
       _bleSubscription?.cancel();
 
-      if (FlutterBluePlus.adapterStateNow != BluetoothAdapterState.on) {
+      if (Platform.isAndroid && FlutterBluePlus.adapterStateNow != BluetoothAdapterState.on) {
         await FlutterBluePlus.turnOn();
       }
 
