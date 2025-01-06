@@ -69,12 +69,18 @@ class OtherBltManager implements OtherInterface {
 
   @override
   Future<bool> isConnected(Printer printer) async {
+    if (Platform.isIOS) {
+      return false;
+    }
     BluetoothConnection? connection = this._connections[printer.address];
     return connection?.isConnected ?? false;
   }
 
   @override
   Future<bool> testConnect(Printer printer) async {
+    if (Platform.isIOS) {
+      return false;
+    }
     if (await this.isConnected(printer)) {
       return true;
     }
