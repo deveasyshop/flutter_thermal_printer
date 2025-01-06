@@ -1,14 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_classic/flutter_blue_classic.dart';
 import 'package:flutter_thermal_printer/Others/other_interface.dart';
-import 'package:flutter_thermal_printer/flutter_thermal_printer_platform_interface.dart';
 import 'package:flutter_thermal_printer/utils/printer.dart';
-import 'package:network_info_plus/network_info_plus.dart';
-import 'package:ping_discover_network_forked/ping_discover_network_forked.dart';
 
 class OtherBltManager implements OtherInterface {
   static final OtherBltManager _instance = OtherBltManager._internal();
@@ -29,6 +25,13 @@ class OtherBltManager implements OtherInterface {
       if (Platform.isIOS) {
         return;
       }
+
+      if (Platform.isAndroid) {
+        if ((await this._flutterBlueClassic.adapterStateNow) != BluetoothAdapterState.on) {
+          this._flutterBlueClassic.turnOn();
+        }
+      }
+
       await this.stopScan();
       this._bltSubscription = _flutterBlueClassic.scanResults.listen((device) {
         Printer printer = Printer(
@@ -59,6 +62,13 @@ class OtherBltManager implements OtherInterface {
       BluetoothConnection? connection = this._connections[printer.address];
       if (!(connection?.isConnected ?? false)) {
         this._connections.remove(printer.address);
+
+        if (Platform.isAndroid) {
+          if ((await this._flutterBlueClassic.adapterStateNow) != BluetoothAdapterState.on) {
+            this._flutterBlueClassic.turnOn();
+          }
+        }
+
         connection = await this._flutterBlueClassic.connect(printer.address!);
         if (connection?.isConnected ?? false) {
           this._connections[printer.address!] = connection!;
@@ -75,26 +85,34 @@ class OtherBltManager implements OtherInterface {
 
   @override
   Future<bool> isConnected(Printer printer) async {
-    if (Platform.isIOS) {
+    try {
+      if (Platform.isIOS) {
+        return false;
+      }
+      BluetoothConnection? connection = this._connections[printer.address];
+      return connection?.isConnected ?? false;
+    } catch (e) {
       return false;
     }
-    BluetoothConnection? connection = this._connections[printer.address];
-    return connection?.isConnected ?? false;
   }
 
   @override
   Future<bool> testConnect(Printer printer) async {
-    if (Platform.isIOS) {
+    try {
+      if (Platform.isIOS) {
+        return false;
+      }
+      if (await this.isConnected(printer)) {
+        return true;
+      }
+      BluetoothConnection? connection = await this._flutterBlueClassic.connect(printer.address!);
+      if (connection?.isConnected ?? false) {
+        await connection?.finish();
+        return true;
+      }
+      return false;
+    } catch (e) {
       return false;
     }
-    if (await this.isConnected(printer)) {
-      return true;
-    }
-    BluetoothConnection? connection = await this._flutterBlueClassic.connect(printer.address!);
-    if (connection?.isConnected ?? false) {
-      await connection?.finish();
-      return true;
-    }
-    return false;
   }
 }
