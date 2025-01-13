@@ -37,6 +37,10 @@ android {
         jvmTarget = "17"
     }
 
+    defaultConfig {
+        minSdkVersion 19
+    }
+
     dependencies {
         testImplementation 'junit:junit:4.13.2'
         testImplementation 'org.mockito:mockito-core:5.0.0'
