@@ -20,7 +20,7 @@ dependencies:
   win32: ^5.4.0
   win_ble: ^1.1.1
   ping_discover_network_forked: ^0.0.1
-  network_info_plus: 4.1.0+1
+  network_info_plus: ^4.0.2
 dev_dependencies:
   flutter_lints: ^4.0.0
   flutter_test:
