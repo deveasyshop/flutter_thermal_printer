@@ -143,7 +143,8 @@ class OtherPrinterManager {
     if (printer.name == null || printer.name == '') {
       return;
     }
-    Printer? find = this._devices.firstWhereOrNull((device) => device.toString() == printer.toString());
+    Printer? find =
+        this._devices.firstWhereOrNull((device) => device.toString() == printer.toString() && device.connectionType == printer.connectionType);
     if (find == null) {
       this._devices.add(printer);
     }

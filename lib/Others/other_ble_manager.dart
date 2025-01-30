@@ -28,36 +28,10 @@ class OtherBleManager implements OtherInterface {
         }
       }
 
-      await FlutterBluePlus.adapterState
-          .where((val) => val == BluetoothAdapterState.on)
-          .first;
+      await FlutterBluePlus.adapterState.where((val) => val == BluetoothAdapterState.on).first;
 
       await FlutterBluePlus.stopScan();
       await FlutterBluePlus.startScan();
-
-      // Get system devices
-      List<Printer> systemPrinters = (await FlutterBluePlus.systemDevices([]))
-          .map((device) =>
-          Printer(
-            address: device.remoteId.str,
-            name: device.platformName,
-            connectionType: ConnectionType.BLE,
-          ))
-          .toList();
-      callback(systemPrinters);
-
-      // Get bonded devices (Android only)
-      if (Platform.isAndroid) {
-        List<Printer> bondedPrinters = (await FlutterBluePlus.bondedDevices)
-            .map((device) =>
-            Printer(
-              address: device.remoteId.str,
-              name: device.platformName,
-              connectionType: ConnectionType.BLE,
-            ))
-            .toList();
-        callback(bondedPrinters);
-      }
 
       // Listen to scan results
       _bleSubscription = FlutterBluePlus.scanResults.listen((result) {
@@ -86,16 +60,11 @@ class OtherBleManager implements OtherInterface {
     try {
       final device = BluetoothDevice.fromId(printer.address!);
       if (!device.isConnected) {
-        await FlutterBluePlus.adapterState
-            .where((val) => val == BluetoothAdapterState.on)
-            .first;
+        await FlutterBluePlus.adapterState.where((val) => val == BluetoothAdapterState.on).first;
         await device.connect();
       }
       final services =
-      (await device.discoverServices()).skipWhile((value) =>
-      value.characteristics
-          .where((element) => element.properties.write)
-          .isEmpty);
+          (await device.discoverServices()).skipWhile((value) => value.characteristics.where((element) => element.properties.write).isEmpty);
       BluetoothCharacteristic? writecharacteristic;
       for (var service in services) {
         for (var characteristic in service.characteristics) {
