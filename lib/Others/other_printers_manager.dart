@@ -107,7 +107,7 @@ class OtherPrinterManager {
     }
 
     if (connectionTypes.contains(ConnectionType.USB)) {
-      await OtherUsbManager().startScan(callback: (printers) {
+      OtherUsbManager().startScan(callback: (printers) {
         printers.forEach((printer) {
           this._updateOrAddPrinter(printer);
         });
@@ -115,7 +115,7 @@ class OtherPrinterManager {
     }
 
     if (connectionTypes.contains(ConnectionType.BLE)) {
-      await OtherBleManager().startScan(callback: (printers) {
+      OtherBleManager().startScan(callback: (printers) {
         printers.forEach((printer) {
           this._updateOrAddPrinter(printer);
         });
@@ -123,7 +123,7 @@ class OtherPrinterManager {
     }
 
     if (connectionTypes.contains(ConnectionType.BLUETOOTH)) {
-      await OtherBltManager().startScan(callback: (printers) {
+      OtherBltManager().startScan(callback: (printers) {
         printers.forEach((printer) {
           this._updateOrAddPrinter(printer);
         });
@@ -131,7 +131,7 @@ class OtherPrinterManager {
     }
 
     if (connectionTypes.contains(ConnectionType.TCP)) {
-      await OtherTcpManager().startScan(callback: (printers) {
+      OtherTcpManager().startScan(callback: (printers) {
         printers.forEach((printer) {
           this._updateOrAddPrinter(printer);
         });
