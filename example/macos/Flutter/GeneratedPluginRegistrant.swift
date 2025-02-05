@@ -5,7 +5,7 @@
 import FlutterMacOS
 import Foundation
 
-import flutter_blue_plus
+import flutter_blue_plus_darwin
 import flutter_thermal_printer
 import network_info_plus
 import path_provider_foundation

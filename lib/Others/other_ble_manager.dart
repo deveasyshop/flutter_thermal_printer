@@ -33,6 +33,18 @@ class OtherBleManager implements OtherInterface {
       await FlutterBluePlus.stopScan();
       await FlutterBluePlus.startScan();
 
+      List<BluetoothDevice> devices = await FlutterBluePlus.bondedDevices;
+      if (devices.isNotEmpty) {
+        List<Printer> printers = devices
+            .map((e) => Printer(
+                  address: e.remoteId.str,
+                  name: e.platformName,
+                  connectionType: ConnectionType.BLE,
+                ))
+            .toList();
+        callback(printers);
+      }
+
       // Listen to scan results
       _bleSubscription = FlutterBluePlus.scanResults.listen((result) {
         List<Printer> printers = result.map((e) {

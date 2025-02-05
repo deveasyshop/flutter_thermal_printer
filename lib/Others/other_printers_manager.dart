@@ -106,16 +106,16 @@ class OtherPrinterManager {
       throw Exception('No connection type provided');
     }
 
-    if (connectionTypes.contains(ConnectionType.USB)) {
-      await OtherUsbManager().startScan(callback: (printers) {
+    if (connectionTypes.contains(ConnectionType.TCP)) {
+      await OtherTcpManager().startScan(callback: (printers) {
         printers.forEach((printer) {
           this._updateOrAddPrinter(printer);
         });
       });
     }
 
-    if (connectionTypes.contains(ConnectionType.BLE)) {
-      await OtherBleManager().startScan(callback: (printers) {
+    if (connectionTypes.contains(ConnectionType.USB)) {
+      await OtherUsbManager().startScan(callback: (printers) {
         printers.forEach((printer) {
           this._updateOrAddPrinter(printer);
         });
@@ -130,8 +130,10 @@ class OtherPrinterManager {
       });
     }
 
-    if (connectionTypes.contains(ConnectionType.TCP)) {
-      await OtherTcpManager().startScan(callback: (printers) {
+    await Future.delayed(const Duration(seconds: 1));
+
+    if (connectionTypes.contains(ConnectionType.BLE)) {
+      await OtherBleManager().startScan(callback: (printers) {
         printers.forEach((printer) {
           this._updateOrAddPrinter(printer);
         });

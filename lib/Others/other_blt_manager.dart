@@ -33,6 +33,19 @@ class OtherBltManager implements OtherInterface {
       }
 
       await this.stopScan();
+
+      List<BluetoothDevice>? devices = await _flutterBlueClassic.bondedDevices;
+      if (devices != null) {
+        List<Printer> printers = devices
+            .map((e) => Printer(
+                  address: e.address,
+                  name: e.name,
+                  connectionType: ConnectionType.BLUETOOTH,
+                ))
+            .toList();
+        callback(printers);
+      }
+
       this._bltSubscription = _flutterBlueClassic.scanResults.listen((device) {
         Printer printer = Printer(
           address: device.address,
